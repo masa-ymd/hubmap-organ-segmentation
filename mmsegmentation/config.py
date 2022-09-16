@@ -54,7 +54,7 @@ data_root = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/data/'
 classes = ['background', 'kidney', 'prostate', 'largeintestine', 'spleen', 'lung']
 palette = [[0,0,0], [255,0,0], [0,255,0], [0,0,255], [255,255,0], [255,0,255]]
 img_norm_cfg = dict(mean=[196.869, 190.186, 194.802], std=[63.010, 66.765, 65.745], to_rgb=True)
-size = 256
+size = 512
 
 train_pipeline = [
     dict(type='LoadImageFromFile'),
@@ -148,4 +148,4 @@ runner = dict(type = 'IterBasedRunner', max_iters = total_iters)
 checkpoint_config = dict(by_epoch=False, interval=-1, save_optimizer=False)
 evaluation = dict(by_epoch=False, interval=500, metric='mDice', pre_eval=True)
 fp16 = dict()
-work_dir = './baseline'
+work_dir = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/baseline'

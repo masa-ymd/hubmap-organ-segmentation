@@ -50,7 +50,7 @@ model = dict(
 
 # dataset settings
 dataset_type = 'CustomDataset'
-data_root = '/kaggle/working/mmseg_data/'
+data_root = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/data/'
 classes = ['background', 'kidney', 'prostate', 'largeintestine', 'spleen', 'lung']
 palette = [[0,0,0], [255,0,0], [0,255,0], [0,0,255], [255,255,0], [255,0,255]]
 img_norm_cfg = dict(mean=[196.869, 190.186, 194.802], std=[63.010, 66.765, 65.745], to_rgb=True)
@@ -91,7 +91,7 @@ data = dict(
         ann_dir='masks',
         img_suffix=".png",
         seg_map_suffix='.png',
-        split="splits/fold_0.txt",
+        split="./splits/fold_0.txt",
         classes=classes,
         palette=palette,
         pipeline=train_pipeline),
@@ -102,7 +102,7 @@ data = dict(
         ann_dir='masks',
         img_suffix=".png",
         seg_map_suffix='.png',
-        split="splits/valid_0.txt",
+        split="./splits/valid_0.txt",
         classes=classes,
         palette=palette,
         pipeline=test_pipeline),

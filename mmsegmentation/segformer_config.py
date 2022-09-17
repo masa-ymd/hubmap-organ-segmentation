@@ -27,7 +27,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(2048, 640),
+        img_scale=(size, size),
         # img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
         flip=False,
         transforms=[
@@ -75,13 +75,6 @@ data = dict(
         classes=classes,
         palette=palette,
         pipeline=test_pipeline))
-
-"""
-data = dict(
-    train=dict(pipeline=train_pipeline),
-    val=dict(pipeline=test_pipeline),
-    test=dict(pipeline=test_pipeline))
-"""
 
 # model settings
 checkpoint = 'https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/segformer/mit_b4_20220624-d588d980.pth'  # noqa
@@ -158,4 +151,4 @@ runner = dict(type = 'IterBasedRunner', max_iters = total_iters)
 checkpoint_config = dict(by_epoch=False, interval=-1, save_optimizer=False)
 evaluation = dict(by_epoch=False, interval=500, metric='mDice', pre_eval=True)
 fp16 = dict()
-work_dir = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/segformer_checkpoint_fold{fold}'
+work_dir = f'/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/segformer_checkpoint_fold{fold}'

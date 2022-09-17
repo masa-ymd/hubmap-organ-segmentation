@@ -8,13 +8,16 @@ classes = ['background', 'kidney', 'prostate', 'largeintestine', 'spleen', 'lung
 palette = [[0,0,0], [255,0,0], [0,255,0], [0,0,255], [255,255,0], [255,0,255]]
 size = 512
 
+# dataset settings
+dataset_type = 'CustomDataset'
+data_root = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/data/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 crop_size = (512, 512)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', reduce_zero_label=True),
-    dict(type='Resize', img_scale=(size, size), ratio_range=(0.5, 2.0)),
+    dict(type='Resize', img_scale=(size, size), keep_ratio=True),
     dict(type='RandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5),
     dict(type='PhotoMetricDistortion'),
@@ -77,7 +80,7 @@ data = dict(
         pipeline=test_pipeline))
 
 # model settings
-checkpoint = 'https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/segformer/mit_b4_20220624-d588d980.pth'  # noqa
+checkpoint = 'https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/segformer/mit_b5_20220624-658746d9.pth'  # noqa
 norm_cfg = dict(type='SyncBN', requires_grad=True)
 model = dict(
     type='EncoderDecoder',
@@ -87,7 +90,7 @@ model = dict(
         in_channels=3,
         embed_dims=64,
         num_stages=4,
-        num_layers=[3, 8, 27, 3],
+        num_layers=[3, 6, 40, 3],
         num_heads=[1, 2, 5, 8],
         patch_sizes=[7, 3, 3, 3],
         sr_ratios=[8, 4, 2, 1],
@@ -112,15 +115,6 @@ model = dict(
     train_cfg=dict(),
     test_cfg=dict(mode='whole'))
 
-"""
-checkpoint = 'https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/segformer/mit_b4_20220624-d588d980.pth'  # noqa
-model = dict(
-    pretrained=checkpoint,
-    backbone=dict(
-        embed_dims=64, num_heads=[1, 2, 5, 8], num_layers=[3, 8, 27, 3]),
-    decode_head=dict(in_channels=[64, 128, 320, 512]))
-"""
-
 # yapf:disable
 log_config = dict(
     interval=50,
@@ -135,9 +129,20 @@ resume_from = None
 workflow = [('train', 1)]
 cudnn_benchmark = True
 
-total_iters = 15000
+total_iters = 5000
 # optimizer
-optimizer = dict(type='AdamW', lr=1e-3, betas=(0.9, 0.999), weight_decay=0.05)
+optimizer = dict(
+    _delete_=True,
+    type='AdamW',
+    lr=0.00006,
+    betas=(0.9, 0.999),
+    weight_decay=0.01,
+    paramwise_cfg=dict(
+        custom_keys={
+            'pos_block': dict(decay_mult=0.),
+            'norm': dict(decay_mult=0.),
+            'head': dict(lr_mult=10.)
+        }))
 optimizer_config = dict(type='Fp16OptimizerHook', loss_scale='dynamic')
 # learning policy
 lr_config = dict(policy='poly',

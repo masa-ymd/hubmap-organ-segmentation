@@ -1,0 +1,123 @@
+_base_ = ['./segformer_mit-b0_512x512_160k_ade20k.py']
+
+# dataset settings
+dataset_type = 'CustomDataset'
+data_root = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/data/'
+classes = ['background', 'kidney', 'prostate', 'largeintestine', 'spleen', 'lung']
+palette = [[0,0,0], [255,0,0], [0,255,0], [0,0,255], [255,255,0], [255,0,255]]
+size = 640
+
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+crop_size = (640, 640)
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', reduce_zero_label=True),
+    dict(type='Resize', img_scale=(size, size), ratio_range=(0.5, 2.0)),
+    dict(type='RandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='PhotoMetricDistortion'),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='Pad', size=crop_size, pad_val=0, seg_pad_val=255),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_semantic_seg']),
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(2048, 640),
+        # img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip'),
+            dict(type='Normalize', **img_norm_cfg),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img']),
+        ])
+]
+
+data = dict(
+    samples_per_gpu=8,
+    workers_per_gpu=4,
+    train=dict(
+        type=dataset_type,
+        data_root=data_root,
+        img_dir='train',
+        ann_dir='masks',
+        img_suffix=".png",
+        seg_map_suffix='.png',
+        split="splits/fold_0.txt",
+        classes=classes,
+        palette=palette,
+        pipeline=train_pipeline),
+    val=dict(
+        type=dataset_type,
+        data_root=data_root,
+        img_dir='train',
+        ann_dir='masks',
+        img_suffix=".png",
+        seg_map_suffix='.png',
+        split="splits/valid_0.txt",
+        classes=classes,
+        palette=palette,
+        pipeline=test_pipeline),
+    test=dict(
+        type=dataset_type,
+        data_root=data_root,
+        test_mode=True,
+        img_dir='train',
+        ann_dir='masks',
+        img_suffix=".png",
+        seg_map_suffix='.png',
+        classes=classes,
+        palette=palette,
+        pipeline=test_pipeline))
+
+"""
+data = dict(
+    train=dict(pipeline=train_pipeline),
+    val=dict(pipeline=test_pipeline),
+    test=dict(pipeline=test_pipeline))
+"""
+
+# model settings
+checkpoint = 'https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/segformer/mit_b5_20220624-658746d9.pth'  # noqa
+model = dict(
+    pretrained=checkpoint,
+    backbone=dict(
+        embed_dims=64, num_heads=[1, 2, 5, 8], num_layers=[3, 6, 40, 3]),
+    decode_head=dict(in_channels=[64, 128, 320, 512]))
+
+# yapf:disable
+log_config = dict(
+    interval=50,
+    hooks=[
+        dict(type='TextLoggerHook', by_epoch=False),
+    ])
+# yapf:enable
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = None
+resume_from = None
+workflow = [('train', 1)]
+cudnn_benchmark = True
+
+total_iters = 50
+# optimizer
+optimizer = dict(type='AdamW', lr=1e-3, betas=(0.9, 0.999), weight_decay=0.05)
+optimizer_config = dict(type='Fp16OptimizerHook', loss_scale='dynamic')
+# learning policy
+lr_config = dict(policy='poly',
+                 warmup='linear',
+                 warmup_iters=500,
+                 warmup_ratio=1e-6,
+                 power=1.0, min_lr=0.0, by_epoch=False)
+# runtime settings
+find_unused_parameters = True
+runner = dict(type = 'IterBasedRunner', max_iters = total_iters)
+checkpoint_config = dict(by_epoch=False, interval=-1, save_optimizer=False)
+evaluation = dict(by_epoch=False, interval=500, metric='mDice', pre_eval=True)
+fp16 = dict()
+work_dir = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/segformer_baseline'

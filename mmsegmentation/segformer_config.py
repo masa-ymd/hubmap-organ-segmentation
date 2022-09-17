@@ -5,11 +5,11 @@ dataset_type = 'CustomDataset'
 data_root = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/data/'
 classes = ['background', 'kidney', 'prostate', 'largeintestine', 'spleen', 'lung']
 palette = [[0,0,0], [255,0,0], [0,255,0], [0,0,255], [255,255,0], [255,0,255]]
-size = 640
+size = 512
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-crop_size = (640, 640)
+crop_size = (512, 512)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', reduce_zero_label=True),
@@ -83,11 +83,11 @@ data = dict(
 """
 
 # model settings
-checkpoint = 'https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/segformer/mit_b5_20220624-658746d9.pth'  # noqa
+checkpoint = 'https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/segformer/mit_b4_20220624-d588d980.pth'  # noqa
 model = dict(
     pretrained=checkpoint,
     backbone=dict(
-        embed_dims=64, num_heads=[1, 2, 5, 8], num_layers=[3, 6, 40, 3]),
+        embed_dims=64, num_heads=[1, 2, 5, 8], num_layers=[3, 8, 27, 3]),
     decode_head=dict(in_channels=[64, 128, 320, 512]))
 
 # yapf:disable

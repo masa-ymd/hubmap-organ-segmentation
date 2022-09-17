@@ -156,4 +156,4 @@ runner = dict(type = 'IterBasedRunner', max_iters = total_iters)
 checkpoint_config = dict(by_epoch=False, interval=-1, save_optimizer=False)
 evaluation = dict(by_epoch=False, interval=500, metric='mDice', pre_eval=True)
 fp16 = dict()
-work_dir = f'/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/segformer_checkpoint_fold{fold}'
+work_dir = f'/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/segformer_checkpoint_fold{fold}_2'

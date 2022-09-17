@@ -1,5 +1,5 @@
 #_base_ = ['./segformer_mit-b0_512x512_160k_ade20k.py']
-_base_ = ['./segformer_config.py']
+#_base_ = ['./segformer_config.py']
 
 # dataset settings
 dataset_type = 'CustomDataset'

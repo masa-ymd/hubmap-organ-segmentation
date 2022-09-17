@@ -1,5 +1,5 @@
 #_base_ = ['./segformer_mit-b0_512x512_160k_ade20k.py']
-#_base_ = ['./segformer_config.py']
+fold = 0
 
 # dataset settings
 dataset_type = 'CustomDataset'
@@ -49,7 +49,7 @@ data = dict(
         ann_dir='masks',
         img_suffix=".png",
         seg_map_suffix='.png',
-        split="splits/fold_0.txt",
+        split=f"splits/fold_{fold}.txt",
         classes=classes,
         palette=palette,
         pipeline=train_pipeline),
@@ -60,7 +60,7 @@ data = dict(
         ann_dir='masks',
         img_suffix=".png",
         seg_map_suffix='.png',
-        split="splits/valid_0.txt",
+        split=f"splits/valid_{fold}.txt",
         classes=classes,
         palette=palette,
         pipeline=test_pipeline),
@@ -142,7 +142,7 @@ resume_from = None
 workflow = [('train', 1)]
 cudnn_benchmark = True
 
-total_iters = 50
+total_iters = 15000
 # optimizer
 optimizer = dict(type='AdamW', lr=1e-3, betas=(0.9, 0.999), weight_decay=0.05)
 optimizer_config = dict(type='Fp16OptimizerHook', loss_scale='dynamic')
@@ -158,4 +158,4 @@ runner = dict(type = 'IterBasedRunner', max_iters = total_iters)
 checkpoint_config = dict(by_epoch=False, interval=-1, save_optimizer=False)
 evaluation = dict(by_epoch=False, interval=500, metric='mDice', pre_eval=True)
 fp16 = dict()
-work_dir = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/segformer_baseline'
+work_dir = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/segformer_checkpoint_fold{fold}'

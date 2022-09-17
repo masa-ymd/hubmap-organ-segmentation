@@ -132,7 +132,7 @@ cudnn_benchmark = True
 total_iters = 5000
 # optimizer
 optimizer = dict(
-    _delete_=True,
+    #_delete_=True,
     type='AdamW',
     lr=0.00006,
     betas=(0.9, 0.999),

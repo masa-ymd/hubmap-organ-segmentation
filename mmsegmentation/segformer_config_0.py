@@ -2,13 +2,9 @@
 fold = 0
 
 # dataset settings
-dataset_type = 'CustomDataset'
-data_root = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/data/'
 classes = ['background', 'kidney', 'prostate', 'largeintestine', 'spleen', 'lung']
 palette = [[0,0,0], [255,0,0], [0,255,0], [0,0,255], [255,255,0], [255,0,255]]
 size = 512
-
-# dataset settings
 dataset_type = 'CustomDataset'
 data_root = '/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/data/'
 img_norm_cfg = dict(
@@ -154,6 +150,6 @@ lr_config = dict(policy='poly',
 find_unused_parameters = True
 runner = dict(type = 'IterBasedRunner', max_iters = total_iters)
 checkpoint_config = dict(by_epoch=False, interval=-1, save_optimizer=False)
-evaluation = dict(by_epoch=False, interval=500, metric='mDice', pre_eval=True)
+evaluation = dict(by_epoch=False, interval=500, metric='mDice', pre_eval=True, save_best='mDice')
 fp16 = dict()
 work_dir = f'/content/drive/MyDrive/kaggle/hubmap-organ-segmentation/segformer_checkpoint_fold{fold}'

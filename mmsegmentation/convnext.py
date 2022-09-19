@@ -100,7 +100,7 @@ data = dict(
     workers_per_gpu=4,
     train=dict(
         type='CustomDataset',
-        #data_root='mmseg_data/',
+        data_root=data_root,
         img_dir='images',
         ann_dir='mask',
         img_suffix='.png',
@@ -136,7 +136,7 @@ data = dict(
         ]),
     val=dict(
         type='CustomDataset',
-        #data_root='mmseg_data/',
+        data_root=data_root,
         img_dir='images',
         ann_dir='masks',
         img_suffix='.png',
@@ -167,7 +167,7 @@ data = dict(
         ]),
     test=dict(
         type='CustomDataset',
-        #data_root='mmseg_data/',
+        data_root=data_root,
         test_mode=True,
         img_dir='train',
         ann_dir='masks',

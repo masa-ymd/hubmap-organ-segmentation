@@ -52,13 +52,13 @@ palette = [[0, 0, 0], [255, 0, 0], [0, 255, 0], [0, 0, 255], [255, 255, 0],
            [255, 0, 255]]
 img_norm_cfg = dict(
     mean=[196.869, 190.186, 194.802], std=[63.01, 66.765, 65.745], to_rgb=True)
-size = 768
+size = 512
 offset = 128
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations'),
-    dict(type='Resize', img_scale=(896, 896), keep_ratio=True),
-    dict(type='RandomCrop', crop_size=(768, 768), cat_max_ratio=0.75),
+    dict(type='Resize', img_scale=(512, 512), keep_ratio=True),
+    dict(type='RandomCrop', crop_size=(512, 512), cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5, direction='horizontal'),
     dict(type='RandomFlip', prob=0.5, direction='vertical'),
     dict(
@@ -115,8 +115,8 @@ data = dict(
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(type='LoadAnnotations'),
-            dict(type='Resize', img_scale=(896, 896), keep_ratio=True),
-            dict(type='RandomCrop', crop_size=(768, 768), cat_max_ratio=0.75),
+            dict(type='Resize', img_scale=(512, 512), keep_ratio=True),
+            dict(type='RandomCrop', crop_size=(512, 512), cat_max_ratio=0.75),
             dict(type='RandomFlip', prob=0.5, direction='horizontal'),
             dict(type='RandomFlip', prob=0.5, direction='vertical'),
             dict(

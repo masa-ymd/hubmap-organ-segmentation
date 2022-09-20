@@ -41,6 +41,7 @@ model = dict(
         align_corners=False,
         loss_decode=dict(
             type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.4)),
+    test_cfg=dict(mode='whole'))
 """
 model = dict(
     type='EncoderDecoder',
